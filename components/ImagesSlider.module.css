@@ -1,0 +1,41 @@
+.slideshow {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5) !important;
+}
+
+.slideshow img {
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    opacity: 0 !important;
+    /* Increase the rotation angle for testing */
+    transform: scale(1.1) translateX(-1rem) rotate(-10deg) !important;
+    transition: all 0.5s ease-in-out !important;
+    transform-origin: center !important;
+}
+
+.slideshow .active {
+    z-index: 10 !important;
+    opacity: 1 !important;
+    /* Ensure the rotate is reset to 0 for the active class 
+    */
+    transform: scale(1) translateX(0) rotate(0deg) !important;
+    /* transform: rotate(45deg); */
+    transition: transform 0.5s ease-in-out;
+
+}
+
+.image {
+    opacity: 0 !important;
+    transform: scale(0.95) !important;
+    transition: opacity 0.5s ease, transform 0.5s ease !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+}
