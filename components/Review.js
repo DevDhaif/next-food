@@ -2,34 +2,40 @@
 import { useState } from "react";
 import db from "@/lib/firestore";
 import { collection, addDoc } from "@firebase/firestore";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
 function Review() {
   const [rating, setRating] = useState(1);
   const [name, setName] = useState("Anon");
   const [review, setReview] = useState("");
+  const { toast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const currentDate = new Date();
       const docRef = await addDoc(collection(db, "reviews"), {
         name: name,
         review: review,
         rating: rating,
+        date: currentDate,
       });
       console.log("Document written with ID: ", docRef.id);
-      toast("Thank you!", { autoClose: 3000 });
+      toast({
+        title: "!شكرًا على تقييمك",
+        description: "نشوفك قريب ان شاء الله",
+        duration: 3000,
+      });
     } catch (e) {
       console.error("Error adding document: ", e);
     }
   };
+
   return (
     <section className="flex flex-col-reverse md:flex-row w-full mx-auto overflow-hidden border border-white/20 text-white rounded-lg shadow-lg">
       <div className="w-full md:w-1/2  p-5">
-        <ToastContainer style={{ zIndex: "1000" }} />
-        <Toaster />
+        <Toaster className="text-right" rtl={true} />
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="mb-4 text-right">
             <label htmlFor="name" className="block mb-2 text-sm font-medium  ">

@@ -68,3 +68,6 @@ body {
     font-weight: 500;
     color: #ddd8d8;
 }
+.Toastify__toast-body {
+    text-align: right;
+  }
