@@ -1,9 +1,9 @@
 import Link from "next/link";
 import ImagesSlider from "@/components/ImagesSlider";
 import classes from "./page.module.css";
-import Review from "@/components/Review";
+import Review from "@/components/Reviews/Review";
 import Subhero from "@/components/Subhero";
-import Reviews from "@/components/Reviews";
+import Reviews from "@/components/Reviews/Reviews";
 export default function Home() {
   return (
     <>

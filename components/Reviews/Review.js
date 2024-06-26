@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import db from "@/lib/firestore";
-import { collection, addDoc } from "@firebase/firestore";
+import { collection, addDoc, runTransaction, doc } from "@firebase/firestore";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -21,7 +21,13 @@ function Review() {
         rating: rating,
         date: currentDate,
       });
-      console.log("Document written with ID: ", docRef.id);
+      
+      const countRef = doc(db, "metadata", "reviewsCount");
+      await runTransaction(db, async (transaction) => {
+        const countDoc = await transaction.get(countRef);
+        const newCount = countDoc.exists() ? countDoc.data().count + 1 : 1;
+        transaction.set(countRef, { count: newCount });
+      });
       toast({
         title: "!شكرًا على تقييمك",
         description: "نشوفك قريب ان شاء الله",
@@ -80,14 +86,18 @@ function Review() {
                       onChange={() => setRating(starValue)}
                       required
                     />
-                    <svg
-                      className={`h-8 w-8 ${
-                        starValue <= rating ? "text-red-600" : "text-gray-400"
-                      } fill-current hover:text-red-600`}
-                      viewBox="0 0 24 24"
+                    <span
+                      aria-label={`star ${
+                        starValue <= rating ? "filled" : "empty"
+                      }`}
+                      className={`text-4xl ${
+                        starValue <= rating
+                          ? "text-yellow-600"
+                          : "text-gray-400"
+                      } fill-current hover:text-yellow-600`}
                     >
-                      <path d="M12 .587l3.668 7.431 8.332 1.209-6.001 5.852 1.416 8.265L12 18.896l-7.415 3.898 1.416-8.265-6.001-5.852 8.332-1.209L12 .587z" />
-                    </svg>
+                      &#9733;
+                    </span>
                   </label>
                 );
               })}
