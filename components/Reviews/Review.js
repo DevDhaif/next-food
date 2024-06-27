@@ -21,7 +21,7 @@ function Review() {
         rating: rating,
         date: currentDate,
       });
-      
+
       const countRef = doc(db, "metadata", "reviewsCount");
       await runTransaction(db, async (transaction) => {
         const countDoc = await transaction.get(countRef);
@@ -115,9 +115,9 @@ function Review() {
         className="relative w-full md:w-1/2 bg-cover bg-center text-white text-right  "
         style={{ backgroundImage: "url('images/baklawa.webp')" }}
       >
-        <div className="w-full py-24 px-10 h-full backdrop-blur-sm bg-black/40">
-          <h2 className="text-3xl  font-bold mb-2">!رأيك مهم</h2>
-          <p className="mb-4">سعيدين بمعرفة رأيك وتحسين الخدمة</p>
+        <div className="w-full py-24 px-10 h-full backdrop-blur-sm bg-black/60">
+          <h2 className="text-3xl font-bold mb-2">!رأيك مهم</h2>
+          <p className="mb-4 text-xl font-semibold">سعيدين بمعرفة رأيك وتحسين الخدمة</p>
         </div>
       </div>
     </section>

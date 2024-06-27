@@ -30,17 +30,20 @@ body {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Montserrat:wght@400;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
 
 html {
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Amiri Quran', sans-serif;
 }
 
 body {
     margin: 0;
     background: radial-gradient(#282c34, #282c34);
 }
-
+.messiri{
+    font-family: 'El Messiri', sans-serif !important;
+    margin-top: 50px;
+}
 .not-found,
 .error {
     margin-top: 5rem;
@@ -71,3 +74,7 @@ body {
 .Toastify__toast-body {
     text-align: right;
   }
+
+  .messiri{
+    font-family: var(--font-messiri) ;
+ }

@@ -31,7 +31,7 @@ function Reviews() {
         const reviewsCollectionRef = query(
           collection(db, "reviews"),
           orderBy("date", "desc"),
-          limit(1)
+          limit(5)
         );
         const reviewsSnapshot = await getDocs(reviewsCollectionRef);
         const reviewsList = reviewsSnapshot.docs.map((doc) => ({
@@ -56,8 +56,6 @@ function Reviews() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists) {
           setTotalReviews(docSnap.data().count);
-        } else {
-          console.log("No such document!");
         }
       } catch (error) {
         console.error("Error fetching total reviews count: ", error);
@@ -72,14 +70,13 @@ function Reviews() {
   const fetchMoreReviews = async () => {
     if (!lastVisible) return;
     setLoadingMore(true);
-    console.log("Last Visible Document:", lastVisible);
 
     try {
       const nextReviewsQuery = query(
         collection(db, "reviews"),
         orderBy("date", "desc"),
         startAfter(lastVisible),
-        limit(1) // Same limit as the initial fetch
+        limit(5)
       );
       const reviewsSnapshot = await getDocs(nextReviewsQuery);
       const newReviews = reviewsSnapshot.docs.map((doc) => ({
@@ -140,8 +137,6 @@ function Reviews() {
                 : review
             )
           );
-        } else {
-          console.log("No such document!");
         }
       } catch (error) {
         console.error("Error fetching updated review: ", error);
@@ -149,13 +144,13 @@ function Reviews() {
     }
   };
 
-  if (loading && !loadingMore) return <p>Loading reviews...</p>;
+  if (loading && !loadingMore) return <p>جاري تحميل المراجعات ...</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <section className="p-4 space-y-2 mt-4 border rounded border-white/20">
       <h2 className="text-lg font-semibold text-white">
-        Total Reviews: {totalReviews}
+        اجمالي المراجعات : {totalReviews}
       </h2>
       {reviews.map((review) => (
         <ReviewItem
@@ -170,7 +165,7 @@ function Reviews() {
           onClick={fetchMoreReviews}
           disabled={!hasMore || loading || loadingMore}
         >
-          {loadingMore ? "Loading..." : "Load More"}
+          {loadingMore ? "... جاري التحميل " : " تحميل المزيد"}
         </button>
       )}
     </section>
