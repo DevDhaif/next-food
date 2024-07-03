@@ -17,8 +17,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import CategorySelector from "@/components/CategorySelector";
+import categories from "../data/catgegories";
 
-// const categories = ["ماء", "لحوم", "طلبات", "كشري", "سندويشات", "HHHH"];
 function renderContent(dishesByCategory, activeCategory) {
   const dishes = dishesByCategory[activeCategory];
 
@@ -69,26 +69,49 @@ function renderContent(dishesByCategory, activeCategory) {
     </>
   );
 }
+
+import { collection, getDocs } from "@firebase/firestore";
+import db from "@/lib/firestore";
+// import { useState, useEffect } from "react";
 function Page() {
-  const [dishesByCategory, setDishesByCategory] = useState({});
-  const [activeCategory, setActiveCategory] = useState("");
+  const [dishesByCategory, setDishesByCategory] = useState([]);
+  const [activeCategory, setActiveCategory] = useState(categories[0]);
+  const [dishes, setDishes] = useState([]);
 
   useEffect(() => {
-    const categoryDishes = foodData.reduce((acc, item) => {
-      const { category, dishes } = item;
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category] = acc[category].concat(dishes);
-      return acc;
-    }, {});
+    const fetchDishes = async () => {
+      const dishesCol = collection(db, "dishes");
+      const dishesSnapshot = await getDocs(dishesCol);
+      const dishesList = dishesSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setDishes(dishesList);
+      setDishesByCategory(
+        dishesList.filter((i) => i.category == activeCategory)
+      );
+      //   console.log(dishesList.filter((i) => i.calories == 5));
+    };
 
-    setDishesByCategory(categoryDishes);
-    setActiveCategory(Object.keys(categoryDishes)[0]); // Set the first category as active
+    fetchDishes();
+    // set;
+    // const categoryDishes = dishes.reduce((acc, item) => {
+    //   const { category, dishes } = item;
+    //   if (!acc[category]) {
+    //     acc[category] = [];
+    //   }
+    //   acc[category] = acc[category].concat(dishes);
+    //   return acc;
+    // }, {});
+
+    // setDishesByCategory(categoryDishes);
+    // setActiveCategory(Object.keys(categoryDishes)[0]); // Set the first category as active
   }, []);
 
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
+    const filteredDishes = dishes.filter((dish) => dish.category === category);
+    setDishesByCategory(filteredDishes);
   };
 
   return (
@@ -96,7 +119,7 @@ function Page() {
       <div
         className={`inline-flex h-12 rounded-md border-b bg-slate-100 text-slate-800 border-white/20 z-50 p-1  dark:bg-slate-800 dark:text-slate-400 fixed mx-auto container -mt-4 lg:justify-center  w-full -translate-x-1/2 left-1/2 overflow-x-auto whitespace-nowrap  items-center `}
       >
-        {Object.keys(dishesByCategory).map((category) => (
+        {categories.map((category) => (
           <button
             onClick={() => handleCategoryChange(category)} // Pass the category to the handler
             className={`inline-flex items-center justify-center whitespace-nowrap mx-4  text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 dark:data-[state=active]:bg-slate-950 dark:data-[state=active]:text-slate-50 rounded-md  h-10 px-4 py-2
@@ -113,7 +136,73 @@ function Page() {
           </button>
         ))}
       </div>
-      <div
+      <div>
+        <div
+          key={activeCategory}
+          value={activeCategory}
+          className="grid grid-cols-1 mt-8 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 "
+        >
+          <div className="bg-transparent border-none mt-4 rounded-lg border border-slate-200 text-slate-200 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50">
+            <div className="flex flex-col p-6">
+              <div className="text-2xl font-semibold leading-none tracking-tight">
+                {activeCategory}
+              </div>
+              <div className="text-sm text-slate-400 dark:text-slate-400 mt-2">
+                استعرض اطباقنا من قائمة ال{activeCategory.toLowerCase()}
+              </div>
+            </div>
+            <div className="mx-4 p-6 pt-0">
+              <div className="content grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 ">
+                {dishesByCategory.map((item) => (
+                  <div
+                    key={item.id}
+                    className="mt-12 text-center md:text-right relative md:mx-4 flex flex-col bg-gray-100 md:flex-row w-full md:w-auto border rounded-md border-red-500/20 justify-between"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="absolute size-8 fill-red-500 -translate-x-1/2 left-1/2 top-1/2 -mt-5 md:-translate-x-1/2 md:-mt-4 md:top-0 md:left-1/2 "
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                      />
+                    </svg>
+
+                    <img
+                      src={item.imgUrl}
+                      alt={item.name}
+                      className="w-full md:w-40 object-cover"
+                    />
+                    <div className="flex flex-col space-y-4 justify-around p-8">
+                      <div className="text-slate-800 font-semibold text-xl">
+                        {item.name}
+                      </div>
+                      <div
+                        style={{ direction: "rtl" }}
+                        className="text-green-700 font-semibold"
+                      >
+                        {item.price} ريال
+                      </div>
+                      <div
+                        style={{ direction: "rtl" }}
+                        className="text-red-700 font-semibold"
+                      >
+                        {item.calories} سعرة حرارية
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div
         key={activeCategory}
         value={activeCategory}
         className="grid grid-cols-1 mt-8 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 "
@@ -134,7 +223,21 @@ function Page() {
                   key={item.id}
                   className="mt-12 text-center md:text-right relative md:mx-4 flex flex-col bg-gray-100 md:flex-row w-full md:w-auto border rounded-md border-red-500/20 justify-between"
                 >
-                  <div className="absolute w-12 h-12 bg-red-600 rounded-full md:-translate-x-1/2 md:-mt-6 md:left-1/2 "></div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="absolute size-8 fill-red-500 -translate-x-1/2 left-1/2 top-1/2 -mt-5 md:-translate-x-1/2 md:-mt-4 md:top-0 md:left-1/2 "
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                    />
+                  </svg>
+
                   <img
                     src={item.image}
                     alt={item.name}
@@ -162,7 +265,7 @@ function Page() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
