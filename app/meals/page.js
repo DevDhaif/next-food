@@ -176,7 +176,7 @@ function Page() {
                     <img
                       src={item.imgUrl}
                       alt={item.name}
-                      className="w-full md:w-40 object-cover"
+                      className="w-full min-h-40 md:w-40 object-cover"
                     />
                     <div className="flex flex-col space-y-4 justify-around p-8">
                       <div className="text-slate-800 font-semibold text-xl">
