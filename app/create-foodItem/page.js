@@ -177,7 +177,7 @@ function CreateFoodItem() {
             id="image"
             onChange={(e) => setImage(e.target.files[0])}
             max="6"
-            accept=".jpg,.png,.jpeg"
+            accept=".jpg,.png,.jpeg,.webp"
             required
             class="hidden"
           />
