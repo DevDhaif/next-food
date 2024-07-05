@@ -13,7 +13,7 @@ function page() {
     <>
       <Header></Header>
       <div>
-        <DishCard clicker={() => clicker(value)} />
+        {/* <DishCard clicker={() => clicker(value)} /> */}
         <button onClick={() => clicker(value)}>ORIGINAL</button>
         <p>About Us </p>
         <Link href={"/"}>Home</Link>
