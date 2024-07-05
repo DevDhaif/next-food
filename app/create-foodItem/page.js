@@ -10,6 +10,7 @@ import CustomNumberInput from "@/components/CustomNumberInput";
 function CreateFoodItem() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
   const [calories, setCalories] = useState("");
   const [category, setCategory] = useState(categories[0]);
   const [image, setImage] = useState(null);
@@ -46,12 +47,13 @@ function CreateFoodItem() {
     }
     try {
       const docRef = await addDoc(collection(db, "dishes"), {
-        name: name,
-        price: price,
-        calories: calories,
-        imgUrl: imgUrl,
+        name,
+        price,
+        calories,
+        imgUrl,
+        category,
+        description,
         likes: 0,
-        category: category,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -93,6 +95,22 @@ function CreateFoodItem() {
       <div>
         <label
           className="block text-red-800 font-semibold text-xl"
+          htmlFor="description"
+        >
+          :الوصف
+        </label>
+        <textarea
+          className="focus:shadow-outline block  text-red-900 appearance-none  border border-red-300 bg-red-50 px-4 py-2 text-right text-lg leading-tight shadow hover:border-red-500 focus:outline-none w-full rounded-md mt-4 focus:outline  outline-red-500 outline-1 outline-offset-2"
+          type="text"
+          id="description"
+          placeholder="وصف الطبق"
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
+        />
+      </div>
+      <div>
+        <label
+          className="block text-red-800 font-semibold text-xl"
           htmlFor="category"
         >
           :الصنف
@@ -128,70 +146,74 @@ function CreateFoodItem() {
           </div>
         </div>
       </div>
-      <div className="mt-4">
-        <label
-          htmlFor="price"
-          className="block text-red-800 font-semibold text-xl"
-        >
-          :السعر
-        </label>
-        <input
-          className="block mt-4 appearance-none w-full text-right text-lg px-4 py-2  rounded shadow leading-tight  focus:outline-none focus:shadow-outline focus:shadow-outline text-red-900 border border-red-300 bg-red-50  hover:border-red-500"
-          type="number"
-          name="price"
-          placeholder="السعر"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-      </div>
-      <div className="mt-4">
-        <label
-          htmlFor="calories"
-          className="block text-red-800 font-semibold text-xl"
-        >
-          :السعرات الحرارية
-        </label>
-
-        <input
-          className=" mt-4 focus:shadow-outline block w-full text-red-900 appearance-none rounded border border-red-300 bg-red-50 px-4 py-2 text-right text-lg leading-tight shadow hover:border-red-500 focus:outline-none"
-          type="number"
-          name="calories"
-          placeholder="عدد السعرات"
-          value={calories}
-          onChange={(e) => setCalories(e.target.value)}
-        />
-      </div>
-      <div class="flex w-full  ">
-        <label class="w-full flex space-x-4 justify-center items-center px-4 py-2 bg-red-50 text-red-950 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue hover:text-white-red-800">
-          <svg
-            class="size-7"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
+      <div className="md:flex md:space-x-4 md:space-y-4">
+        <div className="flex-1">
+          <label
+            htmlFor="price"
+            className="block text-red-800 font-semibold text-xl"
           >
-            <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-          </svg>
-          <span class=" text-base leading-normal">اختر صورة</span>
+            :السعر
+          </label>
           <input
-            type="file"
-            id="image"
-            onChange={(e) => setImage(e.target.files[0])}
-            max="6"
-            accept=".jpg,.png,.jpeg,.webp"
-            required
-            class="hidden"
+            className="block mt-4 appearance-none w-full text-right text-lg px-4 py-2  rounded shadow leading-tight  focus:outline-none focus:shadow-outline focus:shadow-outline text-red-900 border border-red-300 bg-red-50  hover:border-red-500"
+            type="number"
+            name="price"
+            placeholder="السعر"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
           />
-        </label>
+        </div>
+        <div className="mt-8 flex-1">
+          <label
+            htmlFor="calories"
+            className="block text-red-800 font-semibold text-xl"
+          >
+            :السعرات الحرارية
+          </label>
+
+          <input
+            className=" mt-4 focus:shadow-outline block w-full text-red-900 appearance-none rounded border border-red-300 bg-red-50 px-4 py-2 text-right text-lg leading-tight shadow hover:border-red-500 focus:outline-none"
+            type="number"
+            name="calories"
+            placeholder="عدد السعرات"
+            value={calories}
+            onChange={(e) => setCalories(e.target.value)}
+          />
+        </div>
       </div>
-      <button
-        type="submit"
-        className={`w-full px-4 py-2 text-xl font-bold text-red-50 bg-red-950 rounded-md shadow ${
-          loading ? "opacity-50 cursor-not-allowed" : "hover:text-red-100"
-        }`}
-        disabled={loading}
-      >
-        {loading ? "جار الرفع..." : "اضافة طبق"}
-      </button>
+      <div className="md:flex md:space-x-4">
+        <div class="flex w-full  ">
+          <label class="w-full flex space-x-4 justify-center items-center px-4 py-2 bg-red-50 text-red-950 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue hover:text-white-red-800">
+            <svg
+              class="size-7"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+            </svg>
+            <span class=" text-base leading-normal">اختر صورة</span>
+            <input
+              type="file"
+              id="image"
+              onChange={(e) => setImage(e.target.files[0])}
+              max="6"
+              accept=".jpg,.png,.jpeg,.webp"
+              required
+              class="hidden"
+            />
+          </label>
+        </div>
+        <button
+          type="submit"
+          className={`w-full mt-4 md:mt-0 px-4 py-2 text-xl font-bold text-red-50 bg-red-950 rounded-md shadow ${
+            loading ? "opacity-50 cursor-not-allowed" : "hover:text-red-100"
+          }`}
+          disabled={loading}
+        >
+          {loading ? "جار الرفع..." : "اضافة طبق"}
+        </button>
+      </div>
     </form>
   );
 }

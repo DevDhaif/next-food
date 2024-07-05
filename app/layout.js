@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
           </defs>
         </svg>
         <svg
-          className="absolute z-0 w-full"
+          className="absolute z-0 inset-0 w-full "
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
         >
