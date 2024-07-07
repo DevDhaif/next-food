@@ -17,7 +17,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar">
-      <body className={`text-right ${messiri.className}`}>
+      <body className={`relative text-right ${messiri.className}`}>
+        <div className="absolute inset-[15%] block rounded-full bg-white/15 blur-[100px]"></div>
         <svg width="0" height="0">
           <defs>
             <linearGradient
