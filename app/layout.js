@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
           ></path>
         </svg>
         <Header className="z-10" />
-        <main className="relative container mx-auto pt-32 z-10">
+        <main className="relative md:container mx-auto mt-16 z-10">
           {children}
         </main>
       </body>

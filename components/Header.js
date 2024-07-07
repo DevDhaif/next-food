@@ -21,13 +21,13 @@ export default function Header() {
 
   return (
     <Disclosure as="nav" className="">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="flex z-[100] flex-shrink-0 items-center">
+      <div className="mx-auto max-w-7xl flex items-center justify-between px-2 sm:px-6 lg:px-8">
+        <div className="fixed md:static   top-0 left-0 right-0 z-[110] flex h-16 items-center justify-between">
+          <div className="flex z-[120] flex-shrink-0 items-center">
             <PiBowlFoodBold size={32} className="text-white" />
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center sm:hidden">
-            <DisclosureButton className="inline-flex z-[100] items-center justify-center p-2 rounded-md text-gray-100 hover:text-white hover:bg-red-500 outline outline-1 outline-red-100 focus:outline-none">
+            <DisclosureButton className="inline-flex z-[120] items-center justify-center p-2 rounded-md text-gray-100 hover:text-white hover:bg-red-500 ">
               <span className="sr-only">Open main menu</span>
               {open ? (
                 <XMarkIcon
@@ -44,24 +44,24 @@ export default function Header() {
               )}
             </DisclosureButton>
           </div>
-          <div className="hidden sm:block sm:ml-6">
-            <div className="flex space-x-4 lg:space-x-8 xl:space-x-12">
-              {navigation.map((item) => (
-                <NavLink
-                  key={item.name}
-                  href={item.href}
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  {item.name}
-                </NavLink>
-              ))}
-            </div>
+        </div>
+        <div className="hidden sm:block sm:ml-6">
+          <div className="flex space-x-4 lg:space-x-8 xl:space-x-12">
+            {navigation.map((item) => (
+              <NavLink
+                key={item.name}
+                href={item.href}
+                aria-current={item.current ? "page" : undefined}
+              >
+                {item.name}
+              </NavLink>
+            ))}
           </div>
         </div>
       </div>
 
       <Transition show={open}>
-        <div className="px-4 inset-0  z-[80] min-h-screen fixed bg-red-600 max-h-screen py-12 transition duration-500  ease-in flex data-[closed]:opacity-0 space-y-4 flex-col items-center justify-center mt-4">
+        <div className="px-4 inset-0  z-[80] min-h-screen fixed bg-red-600 max-h-screen py-16 transition duration-500  ease-in flex data-[closed]:opacity-0 space-y-4 flex-col items-center justify-center ">
           <div className="absolute top-[60%] opacity-30 w-full h-full z-[100]">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
               <rect fill="#58FF91" />

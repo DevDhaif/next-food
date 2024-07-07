@@ -12,6 +12,8 @@ import {
 import db from "@/lib/firestore";
 import { debounce } from "@/lib/utils";
 import DishCard from "@/components/DishCard";
+import { Disclosure, DisclosureButton } from "@headlessui/react";
+import { ChevronDownIcon } from "lucide-react";
 
 function Page() {
   const [dishesByCategory, setDishesByCategory] = useState([]);
@@ -85,14 +87,14 @@ function Page() {
   const debouncedIncrementLikes = debounce(incrementLikes, 500);
 
   return (
-    <div className="w-full overflow-x-scroll container  relative px-4">
+    <div className="w-full overflow-x-scroll relative">
       <div
-        className={`inline-flex h-12 rounded-md border-b bg-slate-100 text-slate-800 border-white/20 z-50 p-1  dark:bg-slate-800 dark:text-slate-400 fixed mx-auto container -mt-4 lg:justify-center  w-full -translate-x-1/2 left-1/2 overflow-x-auto whitespace-nowrap  items-center `}
+        className={`inline-flex py-3  md:rounded-md  border-b bg-slate-100 text-slate-800 border-white/20 z-50 px-2  dark:bg-slate-800 dark:text-slate-400 fixed mx-auto container  lg:justify-center  w-full max-w-7xl -translate-x-1/2 left-1/2 overflow-x-auto whitespace-nowrap items-center `}
       >
         {categories.map((category) => (
           <button
             onClick={() => handleCategoryChange(category)} // Pass the category to the handler
-            className={`inline-flex items-center justify-center whitespace-nowrap mx-4  text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 dark:data-[state=active]:bg-slate-950 dark:data-[state=active]:text-slate-50 rounded-md  h-10 px-4 py-2
+            className={`inline-flex flex-col items-center justify-center whitespace-nowrap mx-4  text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 dark:data-[state=active]:bg-slate-950 dark:data-[state=active]:text-slate-50 rounded-md  h-full 
              ${
                activeCategory === category
                  ? " text-red-600 text-[19px] font-extrabold"
@@ -102,7 +104,18 @@ function Page() {
             key={category}
             value={category}
           >
-            {category}
+            <div className="mx-4 relative w-16 h-16 ">
+              <img
+                className={`w-full h-full rounded-full ${
+                  activeCategory === category
+                    ? " outline outline-1 outline-red-500 outline-offset-2"
+                    : ""
+                }`}
+                src="images/baklawa.webp"
+                alt=""
+              />
+            </div>
+            <span className="mt-2">{category}</span>
           </button>
         ))}
       </div>
@@ -110,10 +123,10 @@ function Page() {
         <div
           key={activeCategory}
           value={activeCategory}
-          className="grid grid-cols-1 mt-8 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 "
+          className="grid grid-cols-1 mt-16 md:mt-24 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2  dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 "
         >
-          <div className="bg-transparent border-none mt-4 rounded-lg border border-slate-200 text-slate-200 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50">
-            <div className="flex flex-col p-6">
+          <div className="bg-transparent border-none mt-12 rounded-lg border border-slate-200 text-slate-200 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50">
+            <div className="flex flex-col py-6 px-4 md:px-12">
               <div className="text-2xl font-semibold leading-none tracking-tight">
                 {activeCategory}
               </div>
