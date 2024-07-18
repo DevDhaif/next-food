@@ -1,43 +1,33 @@
 function CategorySelector({ categories, activeCategory, onCategoryChange }) {
   return (
-    // <div className="fixed flex max-w-full  space-x-4 z-50 rounded-md bg-slate-100 px-4 py-2 text-slate-500 just w-full overflow-x-scroll">
-    //   {categories.map((category) => (
-    //     <button
-    //       key={category}
-    //       value={category}
-    //       onClick={() => onCategoryChange(category)}
-    //       className={`p-2 ring-offset-red-500
-    //       ${
-    //         activeCategory === category
-    //           ? "text-red-500 font-medium"
-    //           : "text-gray-500"
-    //       }`}
-    //     >
-    //       {category}
-    //     </button>
-    //   ))}
-    // </div>
-    <div class="rounded-md relative border-b border-gray-200  sm:overflow-hidden bg-blue-500 mx-auto max-w-full grid grid-cols-1 gap-4 lg:col-span-3 ">
-      <nav
-        class=" flex space-x-8 bg-white overflow-x-auto scroll-"
-        aria-label="Tabs"
-      >
-        {categories.map((category) => (
-          <button
-            key={category}
-            value={category}
-            onClick={() => onCategoryChange(category)}
-            className={`p-2 ring-offset-red-500
-           ${
-             activeCategory === category
-               ? "text-red-500 font-medium"
-               : "text-gray-500"
-           }`}
-          >
-            {category}
-          </button>
-        ))}
-      </nav>
+    <div
+      className={`inline-flex py-3 md:rounded-md border-b bg-slate-100/80 backdrop-blur-md text-slate-800 border-white/20 z-50 px-2 dark:bg-slate-800 dark:text-slate-400 fixed mx-auto container lg:justify-center w-full max-w-7xl -translate-x-1/2 left-1/2 overflow-x-auto whitespace-nowrap items-center`}
+    >
+      {categories.map((category) => (
+        <button
+          onClick={() => onCategoryChange(category)}
+          className={`inline-flex flex-col items-center justify-center whitespace-nowrap mx-4 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 dark:data-[state=active]:bg-slate-950 dark:data-[state=active]:text-slate-50 rounded-md h-full ${
+            activeCategory === category
+              ? "text-red-600 text-[19px] font-extrabold"
+              : ""
+          }`}
+          key={category}
+          value={category}
+        >
+          <div className="mx-4 relative w-16 h-16">
+            <img
+              className={`w-full h-full rounded-full ${
+                activeCategory === category
+                  ? "outline outline-1 outline-red-500 outline-offset-2"
+                  : ""
+              }`}
+              src="../images/baklawa.webp"
+              alt=""
+            />
+          </div>
+          <span className="mt-2">{category}</span>
+        </button>
+      ))}
     </div>
   );
 }

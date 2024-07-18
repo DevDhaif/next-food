@@ -1,9 +1,5 @@
-import React from 'react'
-
 function page() {
-    return (
-        <div>share</div>
-    )
+  return <div>Share</div>;
 }
 
-export default page
+export default page;

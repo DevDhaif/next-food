@@ -15,19 +15,18 @@ const navigation = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const closeMenu = () => {
-    console.log("ID");
     setOpen(false);
   };
 
   return (
     <Disclosure as="nav" className="">
-      <div className="mx-auto max-w-7xl flex items-center justify-between px-2 sm:px-6 lg:px-8">
-        <div className="fixed md:static   top-0 left-0 right-0 z-[110] flex h-16 items-center justify-between">
-          <div className="flex z-[120] flex-shrink-0 items-center">
+      <div className="mx-auto md:fixed w-full md:left-1/2 md:bg-red-600/40 md:z-[200] md:backdrop-blur-2xl md:-translate-x-1/2 max-w-7xl flex items-center justify-between px-2 sm:px-6 lg:px-8">
+        <div className="z-[120]  fixed md:static top-0 pl-4 md:pl-0 bg-red-600/40 md:bg-transparent backdrop-blur-3xl md:backdrop-blur-none left-0 right-0 flex h-16 items-center justify-between">
+          <div className="flex flex-shrink-0 items-center ">
             <PiBowlFoodBold size={32} className="text-white" />
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center sm:hidden">
-            <DisclosureButton className="inline-flex z-[120] items-center justify-center p-2 rounded-md text-gray-100 hover:text-white hover:bg-red-500 ">
+          <div className="absolute inset-y-0 right-4  flex items-center sm:hidden">
+            <DisclosureButton className="inline-flex  items-center justify-center p-2 rounded-md text-gray-100 hover:text-white hover:bg-red-500 ">
               <span className="sr-only">Open main menu</span>
               {open ? (
                 <XMarkIcon
@@ -61,7 +60,7 @@ export default function Header() {
       </div>
 
       <Transition show={open}>
-        <div className="px-4 inset-0  z-[80] min-h-screen fixed bg-red-600 max-h-screen py-16 transition duration-500  ease-in flex data-[closed]:opacity-0 space-y-4 flex-col items-center justify-center ">
+        <div className="px-4 inset-0  z-[80] min-h-screen fixed bg-red-600/60 backdrop-blur-[100px] max-h-screen py-16 transition duration-500  ease-in flex data-[closed]:opacity-0 space-y-4 flex-col items-center justify-center ">
           <div className="absolute top-[60%] opacity-30 w-full h-full z-[100]">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
               <rect fill="#58FF91" />
