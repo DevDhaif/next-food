@@ -21,7 +21,7 @@ export default function Header() {
   return (
     <Disclosure as="nav" className="">
       <div className="mx-auto md:fixed w-full md:left-1/2 md:bg-red-600/40 md:z-[200] md:backdrop-blur-2xl md:-translate-x-1/2 max-w-7xl flex items-center justify-between px-2 sm:px-6 lg:px-8">
-        <div className="z-[120]  fixed md:static top-0 pl-4 md:pl-0 bg-red-600/40 md:bg-transparent backdrop-blur-3xl md:backdrop-blur-none left-0 right-0 flex h-16 items-center justify-between">
+        <div className="z-[120]  fixed md:static top-0 pl-4 md:pl-0 bg-red-600 md:bg-transparent left-0 right-0 flex h-16 items-center justify-between">
           <div className="flex flex-shrink-0 items-center ">
             <PiBowlFoodBold size={32} className="text-white" />
           </div>

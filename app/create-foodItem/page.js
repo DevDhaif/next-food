@@ -29,6 +29,7 @@ function CreateFoodItem() {
         const uploadTaskSnapshot = await uploadBytes(storageRef, image);
         imgUrl = await getDownloadURL(uploadTaskSnapshot.ref);
         setName("");
+        setDescription("");
         setPrice(0);
         setCalories(0);
         setCategory("");

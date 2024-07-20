@@ -66,11 +66,11 @@ function DishesCategory({ categories, allDishes }) {
                         />
                         <Skeleton
                           style={{ direction: "rtl" }}
-                          className="w-28 self-end  h-4 text-right bg-green-100 "
+                          className="w-28 self-end  h-4 text-right bg-gray-200 "
                         />
                         <Skeleton
                           style={{ direction: "rtl" }}
-                          className="w-28 self-end  h-4 text-right bg-red-100 "
+                          className="w-28 self-end  h-4 text-right bg-gray-200 "
                         />
                       </div>
                       <Skeleton className="h-36 mt-12 w-full bg-gray-200 " />

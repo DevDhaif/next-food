@@ -63,8 +63,8 @@ function DishCard({
             المكونات
           </span>
         </DisclosureButton>
-        <DisclosurePanel className="mt-2 text-sm/5 text-red-600/80">
-          If you're unhappy with your purchase, we'll refund you in full.
+        <DisclosurePanel className="mt-2 text-sm/5 text-right text-red-600/80">
+          {item.description}
         </DisclosurePanel>
       </Disclosure>
     </div>

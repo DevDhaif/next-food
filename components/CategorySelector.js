@@ -1,7 +1,7 @@
 function CategorySelector({ categories, activeCategory, onCategoryChange }) {
   return (
     <div
-      className={`inline-flex py-3 md:rounded-md border-b bg-slate-100/80 backdrop-blur-md text-slate-800 border-white/20 z-50 px-2 dark:bg-slate-800 dark:text-slate-400 fixed mx-auto container lg:justify-center w-full max-w-7xl -translate-x-1/2 left-1/2 overflow-x-auto whitespace-nowrap items-center`}
+      className={`inline-flex py-3 md:rounded-md border-b bg-slate-100/90 backdrop-blur-sm text-slate-800 border-white/20 z-50 px-2 dark:bg-slate-800 dark:text-slate-400 fixed mx-auto container lg:justify-center w-full max-w-7xl -translate-x-1/2 left-1/2 overflow-x-auto whitespace-nowrap items-center`}
     >
       {categories.map((category) => (
         <button
