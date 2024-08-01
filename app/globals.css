@@ -3,131 +3,109 @@
 @tailwind utilities;
 
 :root {
-    --foreground-rgb: 0, 0, 0;
-    --background-start-rgb: 214, 219, 220;
-    --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
-        --foreground-rgb: 255, 255, 255;
-        --background-start-rgb: 0, 0, 0;
-        --background-end-rgb: 0, 0, 0;
-    }
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
 }
 
 body {
-    color: rgb(var(--foreground-rgb));
-    background: linear-gradient(to bottom,
-            transparent,
-            rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
 }
 
 @layer utilities {
-    .text-balance {
-        text-wrap: balance;
-    }
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Montserrat:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Montserrat:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap");
 
 html {
-    font-family: 'Amiri Quran', sans-serif;
+  font-family: "Amiri Quran", sans-serif;
 }
 
 body {
-    margin: 0;
-    background: radial-gradient(#282c34, #282c34);
+  margin: 0;
+  background: radial-gradient(#282c34, #282c34);
 }
-.messiri{
-    font-family: 'El Messiri', sans-serif !important;
-    margin-top: 50px;
+.messiri {
+  font-family: "El Messiri", sans-serif !important;
+  margin-top: 50px;
 }
 .not-found,
 .error {
-    margin-top: 5rem;
-    text-align: center;
+  margin-top: 5rem;
+  text-align: center;
 }
 
 .not-found h1,
 .error h1 {
-    font-size: 5rem;
-    margin: 0px;
-    font-weight: 900;
-    color: #262626;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, #f9572a, #ffc905);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: cover;
-    background-position: center;
-    font-family: 'Montserrat', sans-serif;
+  font-size: 5rem;
+  margin: 0px;
+  font-weight: 900;
+  color: #262626;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #f9572a, #ffc905);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: cover;
+  background-position: center;
+  font-family: "Montserrat", sans-serif;
 }
 
 .not-found p,
 .error p {
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: #ddd8d8;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #ddd8d8;
 }
 .Toastify__toast-body {
-    text-align: right;
-  }
+  text-align: right;
+}
 
-  .messiri{
-    font-family: var(--font-messiri) ;
- }
- /* Add this custom CSS to your styles/global.css or in a CSS-in-JS solution */
-/* 
-.custom-number-input {
-    appearance: none;
-    -moz-appearance: textfield;
-    position: relative;
-    width: 100%;
-    padding-right: 2rem; 
-  }
-  
-  .custom-number-input::-webkit-outer-spin-button,
-  .custom-number-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  
-  .custom-number-input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  
-  .custom-number-input-buttons {
-    position: absolute;
-    right: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: center;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  .custom-number-input-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s;
-  }
-  
-  .custom-number-input-button:hover {
-    color: #2563eb;
-  }
-  
-  .custom-number-input-button svg {
-    width: 1rem;
-    height: 1rem;
-  }
-   */
+.messiri {
+  font-family: var(--font-messiri);
+}
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.pagination-button.active {
+  font-weight: bold;
+  text-decoration: underline;
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background-color: #d3d3d3;
+}
