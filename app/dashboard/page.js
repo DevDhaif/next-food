@@ -13,19 +13,25 @@ import {
 } from "@/components/ui/table";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
+import IconMenu from "@/components/icon-menu";
+import { ResponsiveDialog } from "@/components/responsive-dialog";
+import { EditDishForm } from "@/components/meals/EditDishForm";
 function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const { dishes, isLoading, error } = useFetchDishes(currentPage);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredDishes, setFilteredDishes] = useState([]);
-
+  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const {
     count,
     isLoading: loadCount,
@@ -80,16 +86,13 @@ function Page() {
     return pages;
   };
 
-  const handleEdit = (dish) => {
-    // Implement your edit logic here
-    console.log("Edit clicked for dish:", dish);
-    // For example, open a modal to edit the dish
+  const handleEditClick = (item) => {
+    setSelectedItem(item);
+    setEditDialogOpen(true);
   };
-
-  const handleDelete = (dishId) => {
-    // Implement your delete logic here
-    console.log("Delete clicked for dish ID:", dishId);
-    // For example, make an API call to delete the dish
+  const handleDeleteClick = (item) => {
+    setSelectedItem(item);
+    setDeleteDialogOpen(true);
   };
   return (
     <div>
@@ -126,7 +129,7 @@ function Page() {
                 <>
                   {filteredDishes.length > 0 ? (
                     filteredDishes.map((item) => (
-                      <TableRow key={item.id}>
+                      <TableRow key={item.id} className="">
                         <TableCell>{item.name}</TableCell>
                         <TableCell>
                           <img
@@ -138,6 +141,46 @@ function Page() {
                         <TableCell>{item.price}</TableCell>
                         <TableCell>{item.category}</TableCell>
                         <TableCell>{item.calories}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-40 z-50"
+                            >
+                              <DropdownMenuItem className="group flex w-full items-center justify-between text-left p-0 text-sm">
+                                <button
+                                  onClick={() => handleEditClick(item)}
+                                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75"
+                                >
+                                  <IconMenu
+                                    text={"Edit"}
+                                    icon={<SquarePen className="w-4 h-4" />}
+                                  />
+                                </button>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="group flex w-full items-center justify-between text-left p-0 text-sm">
+                                <button
+                                  onClick={() => handleDeleteClick(item)}
+                                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75"
+                                >
+                                  <IconMenu
+                                    text={"Delete"}
+                                    icon={<Trash2 className="w-4 h-4" />}
+                                  />
+                                </button>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
@@ -151,6 +194,26 @@ function Page() {
               )}
             </TableBody>
           </Table>
+          <ResponsiveDialog
+            isOpen={isEditDialogOpen}
+            setIsOpen={setEditDialogOpen}
+            title={"edit item"}
+            description={"Edit this item as you wish"}
+          >
+            <EditDishForm
+              item={selectedItem}
+              onClose={() => setEditDialogOpen(false)}
+            />
+          </ResponsiveDialog>
+          <ResponsiveDialog
+            isOpen={isDeleteDialogOpen}
+            setIsOpen={setDeleteDialogOpen}
+            title={"delete item"}
+            description={"Are you sure you want to delete this item?"}
+          >
+            DELETE {selectedItem?.name}
+            DELETE {selectedItem?.price}
+          </ResponsiveDialog>
         </div>
         {totalPages > 1 && (
           <div className="bg-white text-black">
