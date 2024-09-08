@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import useFetchDishes from "@/lib/hooks/useFetchDishes";
 import useFetchDishCount from "@/lib/hooks/useFetchDishesCount";
 import { PAGE_SIZE } from "@/lib/constants";
@@ -15,7 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -24,21 +23,31 @@ import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
 import IconMenu from "@/components/icon-menu";
 import { ResponsiveDialog } from "@/components/responsive-dialog";
 import { EditDishForm } from "@/components/meals/EditDishForm";
+import { DeleteDishForm } from "@/components/meals/DeleteDishForm";
+import { AddDishForm } from "@/components/meals/AddDishForm";
 function Page() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { dishes, isLoading, error } = useFetchDishes(currentPage);
+  const { dishes, isLoading, error, updateDishes, deleteDish } =
+    useFetchDishes(currentPage);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredDishes, setFilteredDishes] = useState([]);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+  const [isAddDialogOpen, setAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const {
     count,
     isLoading: loadCount,
     error: errorCount,
+    incrementCount,
+    decrementCount,
   } = useFetchDishCount();
 
   const totalPages = Math.ceil(count / PAGE_SIZE);
+
+  const handleAddClick = () => {
+    setAddDialogOpen(true);
+  };
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -51,17 +60,46 @@ function Page() {
       setCurrentPage((prev) => prev - 1);
     }
   };
-  useEffect(() => {
-    setFilteredDishes(dishes);
-  }, [dishes]);
+  const handleAddDishSuccess = useCallback(
+    (newDish) => {
+      console.log(newDish);
+      updateDishes(newDish);
+      // Update the count
+      incrementCount();
+
+      setAddDialogOpen(false);
+    },
+    [updateDishes, incrementCount]
+  );
+  const handleDeleteDishSuccess = useCallback(
+    async (dishId) => {
+      const result = await deleteDish(dishId);
+      if (result.success) {
+        setFilteredDishes((currentDishes) =>
+          currentDishes.filter((dish) => dish.id !== dishId)
+        );
+        decrementCount();
+        setDeleteDialogOpen(false);
+      }
+    },
+    [deleteDish, decrementCount]
+  );
 
   useEffect(() => {
-    const filtered = dishes.filter(
-      (dish) =>
-        dish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dish.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredDishes(filtered);
+    if (!isLoading) {
+      setFilteredDishes(dishes);
+    }
+  }, [dishes, isLoading]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      const filtered = dishes.filter(
+        (dish) =>
+          dish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          dish.category.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredDishes(filtered);
+    }
   }, [searchQuery, dishes]);
 
   const renderPageNumbers = () => {
@@ -106,6 +144,7 @@ function Page() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="px-3 py-2 border rounded-md max-w-sm"
           />
+          <Button onClick={handleAddClick}>Add New Dish</Button>
         </div>
         <div>
           <Table className="text-left min-w-full bg-white min-h-60">
@@ -208,11 +247,25 @@ function Page() {
           <ResponsiveDialog
             isOpen={isDeleteDialogOpen}
             setIsOpen={setDeleteDialogOpen}
-            title={"delete item"}
-            description={"Are you sure you want to delete this item?"}
+            title="Delete Dish"
+            description={`Are you sure you want to delete "${selectedItem?.name}"?`}
           >
-            DELETE {selectedItem?.name}
-            DELETE {selectedItem?.price}
+            <DeleteDishForm
+              item={selectedItem}
+              onClose={() => setDeleteDialogOpen(false)}
+              onSuccess={handleDeleteDishSuccess}
+            />
+          </ResponsiveDialog>
+          <ResponsiveDialog
+            isOpen={isAddDialogOpen}
+            setIsOpen={setAddDialogOpen}
+            title="Add New Dish"
+            description="Enter the details for the new dish"
+          >
+            <AddDishForm
+              onClose={() => setAddDialogOpen(false)}
+              onSuccess={handleAddDishSuccess}
+            />
           </ResponsiveDialog>
         </div>
         {totalPages > 1 && (
