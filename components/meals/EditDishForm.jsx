@@ -7,7 +7,7 @@ import { useToast } from "../ui/use-toast";
 import FormField from "./FormField";
 import { updateDish } from "@/app/actions/dishActions";
 
-export function EditDishForm({ item, onClose }) {
+export function EditDishForm({ item, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     calories: item.calories,
     category: item.category,
@@ -54,6 +54,11 @@ export function EditDishForm({ item, onClose }) {
           title: "Success!",
           description: "Dish updated successfully.",
           duration: 3000,
+        });
+        onSuccess({
+          id: item.id,
+          ...formData,
+          imgUrl: result.imgUrl || formData.imgUrl, // Use updated image if available
         });
         onClose();
       } else {

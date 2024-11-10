@@ -1,8 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import useFetchDishes from "@/lib/hooks/useFetchDishes";
-import useFetchDishCount from "@/lib/hooks/useFetchDishesCount";
-import { PAGE_SIZE } from "@/lib/constants";
+import { useState, useCallback } from "react";
 import {
   Table,
   TableHeader,
@@ -11,282 +8,126 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import IconMenu from "@/components/icon-menu";
-import { ResponsiveDialog } from "@/components/responsive-dialog";
-import { EditDishForm } from "@/components/meals/EditDishForm";
-import { DeleteDishForm } from "@/components/meals/DeleteDishForm";
-import { AddDishForm } from "@/components/meals/AddDishForm";
+import useRealtimeDishCount from "@/lib/hooks/useRealtimeDishCount";
+import usePaginatedDishes from "@/lib/hooks/usePaginatedDishes";
+import Pagination from "@/components/Pagination";
+import DishDialog from "@/components/meals/DishDialog";
+import DishTableRow from "@/components/meals/DishTableRow";
+import SearchBar from "@/components/meals/SearchBar";
+import useDialogState from "@/lib/hooks/useDialogStatus";
 function Page() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const { dishes, isLoading, error, updateDishes, deleteDish } =
-    useFetchDishes(currentPage);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredDishes, setFilteredDishes] = useState([]);
-  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
-  const [isAddDialogOpen, setAddDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const { dialogState, handleOpenDialog, handleCloseDialog } = useDialogState();
+
   const {
-    count,
-    isLoading: loadCount,
-    error: errorCount,
-    incrementCount,
-    decrementCount,
-  } = useFetchDishCount();
+    dishes,
+    isLoading,
+    handleNextPage,
+    handlePrevPage,
+    handlePageClick,
+    currentPage,
+    totalPages,
+    addDish,
+    updateDishInState,
+    removeDishInState,
+  } = usePaginatedDishes(searchQuery);
 
-  const totalPages = Math.ceil(count / PAGE_SIZE);
-
-  const handleAddClick = () => {
-    setAddDialogOpen(true);
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
-  };
   const handleAddDishSuccess = useCallback(
     (newDish) => {
-      console.log(newDish);
-      updateDishes(newDish);
-      // Update the count
-      incrementCount();
-
-      setAddDialogOpen(false);
+      addDish(newDish);
+      handleCloseDialog();
     },
-    [updateDishes, incrementCount]
+    [addDish, handleCloseDialog]
+  );
+  const handleEditDishSuccess = useCallback(
+    (updatedDish) => {
+      updateDishInState(updatedDish); // This will update the dish in the state
+      handleCloseDialog(); // Close the edit dialog
+    },
+    [updateDishInState, handleCloseDialog]
   );
   const handleDeleteDishSuccess = useCallback(
-    async (dishId) => {
-      const result = await deleteDish(dishId);
-      if (result.success) {
-        setFilteredDishes((currentDishes) =>
-          currentDishes.filter((dish) => dish.id !== dishId)
-        );
-        decrementCount();
-        setDeleteDialogOpen(false);
-      }
+    (dishId) => {
+      removeDishInState(dishId); // Update the state by removing the dish
+      handleCloseDialog();
     },
-    [deleteDish, decrementCount]
+    [removeDishInState, handleCloseDialog]
   );
 
-  useEffect(() => {
-    if (!isLoading) {
-      setFilteredDishes(dishes);
-    }
-  }, [dishes, isLoading]);
+  const dishCount = useRealtimeDishCount();
 
-  useEffect(() => {
-    if (!isLoading) {
-      const filtered = dishes.filter(
-        (dish) =>
-          dish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          dish.category.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredDishes(filtered);
-    }
-  }, [searchQuery, dishes]);
-
-  const renderPageNumbers = () => {
-    let pages = [];
-    if (totalPages > 1) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(
-          <button
-            key={i}
-            onClick={() => setCurrentPage(i)}
-            style={{
-              margin: "0 5px",
-              padding: "5px 10px",
-              background: currentPage === i ? "#ccc" : "#fff",
-            }}
-          >
-            {i}
-          </button>
-        );
-      }
-    }
-    return pages;
-  };
-
-  const handleEditClick = (item) => {
-    setSelectedItem(item);
-    setEditDialogOpen(true);
-  };
-  const handleDeleteClick = (item) => {
-    setSelectedItem(item);
-    setDeleteDialogOpen(true);
-  };
   return (
-    <div>
-      {loadCount ? "..." : <p> Total Dishes: {count}</p>}
+    <div className="">
+      <p className="text-3xl">{dishCount}</p>
+      <div className="my-4">
+        <SearchBar value={searchQuery} onChange={setSearchQuery} />
+      </div>
+      <Button onClick={() => handleOpenDialog("add")}>Add New Dish</Button>
       <div>
-        <div className="my-4">
-          <input
-            type="text"
-            placeholder="Search by name or category..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-3 py-2 border rounded-md max-w-sm"
-          />
-          <Button onClick={handleAddClick}>Add New Dish</Button>
-        </div>
-        <div>
-          <Table className="text-left min-w-full bg-white min-h-60">
-            <TableHeader>
+        <p>Current Page: {currentPage}</p>
+        <Table className="text-left min-w-full bg-white min-h-60">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Photo</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Calories</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {isLoading ? (
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Photo</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Calories</TableHead>
+                <TableCell colSpan={6} className="text-center">
+                  Loading...
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : (
-                <>
-                  {filteredDishes.length > 0 ? (
-                    filteredDishes.map((item) => (
-                      <TableRow key={item.id} className="">
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>
-                          <img
-                            className="w-20 h-20"
-                            src={item.imgUrl}
-                            alt={item.name}
-                          />
-                        </TableCell>
-                        <TableCell>{item.price}</TableCell>
-                        <TableCell>{item.category}</TableCell>
-                        <TableCell>{item.calories}</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-                              >
-                                <MoreVertical className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                              align="end"
-                              className="w-40 z-50"
-                            >
-                              <DropdownMenuItem className="group flex w-full items-center justify-between text-left p-0 text-sm">
-                                <button
-                                  onClick={() => handleEditClick(item)}
-                                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75"
-                                >
-                                  <IconMenu
-                                    text={"Edit"}
-                                    icon={<SquarePen className="w-4 h-4" />}
-                                  />
-                                </button>
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem className="group flex w-full items-center justify-between text-left p-0 text-sm">
-                                <button
-                                  onClick={() => handleDeleteClick(item)}
-                                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75"
-                                >
-                                  <IconMenu
-                                    text={"Delete"}
-                                    icon={<Trash2 className="w-4 h-4" />}
-                                  />
-                                </button>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center">
-                        No results.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </>
-              )}
-            </TableBody>
-          </Table>
-          <ResponsiveDialog
-            isOpen={isEditDialogOpen}
-            setIsOpen={setEditDialogOpen}
-            title={"edit item"}
-            description={"Edit this item as you wish"}
-          >
-            <EditDishForm
-              item={selectedItem}
-              onClose={() => setEditDialogOpen(false)}
-            />
-          </ResponsiveDialog>
-          <ResponsiveDialog
-            isOpen={isDeleteDialogOpen}
-            setIsOpen={setDeleteDialogOpen}
-            title="Delete Dish"
-            description={`Are you sure you want to delete "${selectedItem?.name}"?`}
-          >
-            <DeleteDishForm
-              item={selectedItem}
-              onClose={() => setDeleteDialogOpen(false)}
-              onSuccess={handleDeleteDishSuccess}
-            />
-          </ResponsiveDialog>
-          <ResponsiveDialog
-            isOpen={isAddDialogOpen}
-            setIsOpen={setAddDialogOpen}
-            title="Add New Dish"
-            description="Enter the details for the new dish"
-          >
-            <AddDishForm
-              onClose={() => setAddDialogOpen(false)}
-              onSuccess={handleAddDishSuccess}
-            />
-          </ResponsiveDialog>
-        </div>
-        {totalPages > 1 && (
-          <div className="bg-white text-black">
-            <button
-              className="disabled:text-gray-600 px-2 py-1 border my-2 disabled:bg-slate-400/50"
-              onClick={handlePrev}
-              disabled={currentPage === 1}
-            >
-              Prev
-            </button>
-            {renderPageNumbers()}
-            <button
-              className="disabled:text-gray-600 px-2 py-1 border my-2 disabled:bg-slate-400/50"
-              onClick={handleNext}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        )}
+            ) : (
+              <>
+                {dishes.length > 0 ? (
+                  dishes.map((dish, index) => (
+                    <DishTableRow
+                      index={index + 1}
+                      key={dish.id}
+                      dish={dish}
+                      handleOpenDialog={handleOpenDialog}
+                    />
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center">
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
+            )}
+          </TableBody>
+        </Table>
+        <DishDialog
+          dialogState={dialogState}
+          handleCloseDialog={handleCloseDialog}
+          handleAddDishSuccess={handleAddDishSuccess}
+          handleEditDishSuccess={handleEditDishSuccess}
+          handleDeleteDishSuccess={handleDeleteDishSuccess}
+        />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageClick={handlePageClick}
+          onNextPage={handleNextPage}
+          onPrevPage={handlePrevPage}
+        />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageClick={handlePageClick}
+          onNextPage={handleNextPage}
+          onPrevPage={handlePrevPage}
+        />
       </div>
     </div>
   );

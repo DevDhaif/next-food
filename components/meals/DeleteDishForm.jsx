@@ -8,7 +8,6 @@ import Image from "next/image";
 export function DeleteDishForm({ item, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-
   const handleDelete = async () => {
     setLoading(true);
     try {

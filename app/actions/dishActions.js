@@ -17,17 +17,19 @@ import {
 } from "@firebase/storage";
 import db from "@/lib/firestore";
 
+async function uploadImage(image) {
+  if (!image) return "";
+
+  const storage = getStorage();
+  const storageRef = ref(storage, `foodImages/${image.name}`);
+  const uploadTaskSnapshot = await uploadBytes(storageRef, image);
+  return await getDownloadURL(uploadTaskSnapshot.ref);
+}
+
 export async function addDish(formData) {
   try {
     const image = formData.get("image");
-    let imgUrl = "";
-
-    if (image) {
-      const storage = getStorage();
-      const storageRef = ref(storage, `foodImages/${image.name}`);
-      const uploadTaskSnapshot = await uploadBytes(storageRef, image);
-      imgUrl = await getDownloadURL(uploadTaskSnapshot.ref);
-    }
+    const imgUrl = await uploadImage(image);
 
     const dishData = {
       name: formData.get("name"),
@@ -55,12 +57,8 @@ export async function updateDish(formData) {
     const image = formData.get("image");
 
     let imgUrl = formData.get("imgUrl");
-
     if (image) {
-      const storage = getStorage();
-      const storageRef = ref(storage, `foodImages/${image.name}`);
-      const uploadTaskSnapshot = await uploadBytes(storageRef, image);
-      imgUrl = await getDownloadURL(uploadTaskSnapshot.ref);
+      imgUrl = await uploadImage(image); // Reusing the helper
     }
 
     const dishRef = doc(db, "dishes", id);
@@ -85,11 +83,10 @@ export async function deleteDish(id) {
   try {
     const dishRef = doc(db, "dishes", id);
     await deleteDoc(dishRef);
-    const countRef = doc(db, "metadata", "dishsCount");
-    // await updateDoc(countRef, { count: increment(-1) });
     return { success: true };
   } catch (error) {
     console.error("Error deleting dish:", error);
     return { success: false, error: error.message };
   }
 }
+    

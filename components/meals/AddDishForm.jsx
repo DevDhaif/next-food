@@ -67,7 +67,8 @@ export function AddDishForm({ onClose, onSuccess }) {
         onSuccess({
           id: result.id,
           ...formData,
-          imgUrl: result.imgUrl, // Assuming the server returns the image URL
+          imgUrl: result.imgUrl,
+          createdAt: formData.createdAt || new Date(), // Assuming the server returns the image URL
         });
 
         onClose();
